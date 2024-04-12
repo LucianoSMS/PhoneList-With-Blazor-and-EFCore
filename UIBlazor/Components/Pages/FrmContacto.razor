@@ -1,0 +1,129 @@
+﻿@using CsvHelper
+@using CsvHelper.Configuration
+@using Microsoft.EntityFrameworkCore
+@using Infrastructure.Repositories
+@using System.IO
+@using System.Net.Http.Headers
+@using System.Globalization
+@using System.Net
+
+
+
+@rendermode InteractiveServer
+
+
+<h3>@Contact.Name </h3>
+
+<div class="col-6">
+    <EditForm Model="Contact" FormName="FrmContacto" OnValidSubmit="AddUpdateContact">
+        <div class="mb-3">
+            <label for="Name" class="form-label">Nome:</label>
+            <InputText id="Name" @bind-Value="Contact.Name" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label for="Email" class="form-label">Email:</label>
+            <InputText typeof="email" id="Email" @bind-Value="Contact.Email" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label for="Phone" class="form-label">Telemovel:</label>
+            <InputText id="Phone" @bind-Value="Contact.Phone" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label for="PhoneNumber" class="form-label">Telefone:</label>
+            <InputText id="PhoneNumber" @bind-Value="Contact.PhoneNumber" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label for="Address" class="form-label">Endereco:</label>
+            <InputText id="Address" @bind-Value="Contact.Address" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label for="Photo" class="form-label">Carregar Fotografia: </label>
+            <InputFile OnChange ="UploadFile" id="Photo"  Name="Arquivo" class="form-control" />
+            @Mensagem
+        </div>
+
+        <div class="mb-3">
+            <button class="btn btn-primary shadow-none" >Salvar</button>
+            <a href="/" class="btn btn-secondary ms-3" @*data-enhance-nav="false" *@>Retornar para Home</a>
+        </div>
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+    </EditForm>
+</div>
+
+
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+    [Parameter]
+    public bool ModoEdicao { get; set; } = false;
+    [Parameter]
+    public EventCallback<Contacto> OnValidContactSubmit { get; set; }
+
+    private string header { get; set; }
+
+
+    public Contacto Contact = new Contacto();
+    protected override async Task OnInitializedAsync()
+    {
+        if (ModoEdicao)
+        {
+            Contact = await contactoRepository.GetContactById (int.Parse(Id));
+            StateHasChanged();
+        }
+    }
+
+    private async Task AddUpdateContact()
+    {
+
+        await OnValidContactSubmit.InvokeAsync(Contact);    
+        StateHasChanged();
+    }
+
+
+    private IBrowserFile file;
+    private string path;
+    byte[] bytes;
+
+
+
+
+    public string Mensagem{ get; set; }
+
+    private async Task UploadFile(InputFileChangeEventArgs e)
+    {
+        long MaxSize = 10000000;
+        file = e.File;
+        string FileName = file.Name;
+        var extensoesPermitidas = new string[] { ".png", ".jpg", ".jpeg", ".gif", ".webp" };
+        var Extensao = Path.GetExtension(FileName);
+
+        if (!extensoesPermitidas.Contains(Extensao))
+        {
+            Mensagem = $"Arquivo: {FileName}, é um tipo de Arquivo não permitido";
+            return;
+        }
+        else{
+
+            if (MaxSize >= file.Size)
+            {
+                var DirectorioUp = Path.Combine(env.WebRootPath, "Img");
+                var path = Path.Combine(DirectorioUp, FileName);
+                Contact.Photo = FileName;
+                var readStream = file.OpenReadStream(MaxSize);
+                bytes = new byte[file.Size];
+                await readStream.ReadAsync(bytes);
+                readStream.Close();
+                var fileStream = new FileStream(path, FileMode.Create);
+                fileStream.Write(bytes);
+                fileStream.Flush();
+                fileStream.Close();
+            }       
+
+        }
+    }
+
+
+}

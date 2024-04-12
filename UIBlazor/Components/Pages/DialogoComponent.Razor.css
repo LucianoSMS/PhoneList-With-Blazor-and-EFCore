@@ -1,0 +1,25 @@
+﻿.confirm-dialog-container {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #010101b2;
+    z-index: 500;
+}
+
+.confirm-dialog {
+    position: fixed;
+    min-width: 20rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20rem;
+    border-radius: 1rem;
+    //background-color: #070606f4;
+    margin-top: 1.5rem;
+}

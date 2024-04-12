@@ -1,0 +1,40 @@
+﻿@page "/listarcontactos"
+@rendermode InteractiveServer
+<h3>Lista de Contactos</h3>
+
+<p>
+<a class="btn btn-primary" href="/novocontacto">Cadastrar Novo Contacto</a>    
+</p>
+
+@if(contactos is null)
+{
+    <div class="col-6">
+
+        <img class="col-form-label" src="/Img/giphy.gif" width="40%" align="center" />
+    </div>
+    
+}
+else
+{
+    <div class="row">
+        @foreach (var Contact in contactos)
+        {
+            <ContactoCard Contact="@Contact"/>
+        }
+
+    </div>
+}
+
+@code {
+    IEnumerable<Contacto> ?contactos;
+    protected override async Task OnInitializedAsync()
+    {
+        contactos = await contactoRepository.GetAllContacts();
+        int n=contactos.Count();
+        if (n == 0)
+        {
+            contactos = null; 
+        }
+       
+    }
+}

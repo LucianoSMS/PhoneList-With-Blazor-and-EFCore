@@ -1,0 +1,27 @@
+﻿@using System.Net.Http
+@using System.Net.Http.Json
+@using Domain.Abstractions
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using static Microsoft.AspNetCore.Components.Web.RenderMode
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.JSInterop
+@using UIBlazor
+@using UIBlazor.Components
+@using Infrastructure.Context
+@using CrossCutting.DependeciesApp
+@using Domain.Entities
+@using CrossCutting
+@using Infrastructure.Repositories
+@using CsvHelper
+@using CsvHelper.Configuration
+@using Microsoft.EntityFrameworkCore
+@using System.IO
+@using System.Net.Http.Headers
+@using System.Globalization
+@using System.Net
+
+@inject IContactoRepository contactoRepository
+@inject NavigationManager navigation
+@inject IWebHostEnvironment env

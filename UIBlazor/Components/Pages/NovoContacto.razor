@@ -1,0 +1,19 @@
+﻿@page "/novocontacto"
+@rendermode InteractiveServer
+<h3>Novo Contacto </h3>
+
+<div class="row justify-content-center">
+   <FrmContacto ModoEdicao="false" OnValidContactSubmit="AddContact"/>
+</div>
+
+@code {
+
+
+    private async Task  AddContact(Contacto Contact)
+    {
+        await contactoRepository.AddContact (Contact);
+        StateHasChanged();
+        navigation.NavigateTo("/");
+    }
+
+}

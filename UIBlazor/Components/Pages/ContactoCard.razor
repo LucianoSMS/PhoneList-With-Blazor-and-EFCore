@@ -1,0 +1,49 @@
+@rendermode InteractiveServer
+
+
+<div class="col-md-3 mb-3">
+    <div class="card custom-card">
+        <img src="\Img\@Contact.Photo" class="card-img-top custom-card-img" position="absolute" hight="100px" width="100px" alt="Photo">
+        <div class="card-body">
+            <h5 class="card-title">Nome: @Contact.Name</h5>
+            <p class="card-text">Email: @Contact.Email</p>
+            <p class="card-text">Telemovel @Contact.Phone</p>
+            <p class="cart-text">Telefone: @Contact.PhoneNumber</p>
+            <p class="cart-text">Endereco: @Contact.Address</p>
+           
+            <div class="d-flex justify-content-between align-items-center mt-2">
+                <a href='/editarcontacto/@Contact.Id.ToString()' class="btn btn-primary">Editar</a>
+                <a @onclick="ConfirmaDialogo" class="btn btn-danger">Eliminar</a>
+            </div>
+        </div>
+    </div>
+</div>
+<DialogoComponent @rendermode="InteractiveServer" Exibir="exibirDialogo" OnCancel="CancelarExclusao" OnDelete="ConfirmarExclusao">
+    <h3 style=" color:whitesmoke; font-weight: bold">De certeza deseja excluir o contacto:<br /> @Contact.Name ?</h3>
+</DialogoComponent>
+
+@code {
+    [Parameter]
+    public required Contacto Contact { get; set; }
+
+    private bool exibirDialogo;
+
+    private void ConfirmaDialogo()
+    {
+        exibirDialogo = true;
+    }
+
+    private void CancelarExclusao()
+    {
+        exibirDialogo = false;
+    }
+
+    private async Task ConfirmarExclusao()
+    {
+        await contactoRepository.DeleteContact(Contact.Id);
+        exibirDialogo = false;
+        StateHasChanged();
+        navigation.NavigateTo("/");
+    }
+
+}

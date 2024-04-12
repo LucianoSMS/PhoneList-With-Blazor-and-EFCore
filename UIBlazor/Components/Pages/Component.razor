@@ -1,0 +1,27 @@
+﻿@page "/editacontact/{id}"
+@rendermode InteractiveServer 
+
+
+<h3>EditaLivros</h3>
+
+
+
+
+<div class="row justify-content-center">
+    <FrmContacto Id=@id ModoEdicao="true" OnValidLivroSubmit="UpdateContact"/>
+</div>
+
+
+@code {
+    [Parameter]
+    public string id { get; set; }
+
+    private async Task UpdateContact(Contacto Contact)
+    {
+        await contactoRepository.UpdateContact(Contact);
+        StateHasChanged();
+        navigation.NavigateTo("/");
+    }
+
+
+}
